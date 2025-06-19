@@ -23,7 +23,7 @@ final class BasicAnimationViewController: UIViewController {
     }
 
     let animationStackView = UIStackView(axis: .vertical, spacing: 20) {
-      BasicAnimationItemView(title: "translation") {
+      AnimationPreviewView(title: "translation") {
         $0.frame.origin.x = $1.minX
       } animations: { item, rect, isReversed in
         if isReversed {
@@ -33,7 +33,7 @@ final class BasicAnimationViewController: UIViewController {
         }
       }
 
-      BasicAnimationItemView(title: "scale") {
+      AnimationPreviewView(title: "scale") {
         $0.layer.cornerRadius = $1.height * 0.5
       } animations: { item, rect, isReversed in
         if isReversed {
@@ -43,7 +43,7 @@ final class BasicAnimationViewController: UIViewController {
         }
       }
 
-      BasicAnimationItemView(title: "cornerRadius") { item, rect, isReversed in
+      AnimationPreviewView(title: "cornerRadius") { item, rect, isReversed in
         if isReversed {
           item.layer.cornerRadius = 0
         } else {
@@ -51,15 +51,15 @@ final class BasicAnimationViewController: UIViewController {
         }
       }
 
-      BasicAnimationItemView(title: "color") { item, rect, isReversed in
+      AnimationPreviewView(title: "color") { item, rect, isReversed in
         item.backgroundColor = .systemRandomColor
       }
 
-      BasicAnimationItemView(title: "alpha") { item, rect, isReversed in
+      AnimationPreviewView(title: "alpha") { item, rect, isReversed in
         item.alpha = isReversed ? 1 : 0.2
       }
 
-      BasicAnimationItemView(title: "border") { item, _ in
+      AnimationPreviewView(title: "border") { item, _ in
         item.layer.cornerRadius = 8
         item.layer.borderColor = UIColor.systemGray.cgColor
       } animations: { item, rect, isReversed in
@@ -74,10 +74,10 @@ final class BasicAnimationViewController: UIViewController {
   }
 }
 
-// MARK: - BasicAnimationViewController.BasicAnimationItemView
+// MARK: - BasicAnimationViewController.AnimationPreviewView
 
 extension BasicAnimationViewController {
-  final class BasicAnimationItemView: UIView {
+  final class AnimationPreviewView: UIView {
     private let containerView = UIView().then {
       $0.backgroundColor = .systemGray6
       $0.layer.cornerRadius = 8
