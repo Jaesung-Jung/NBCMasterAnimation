@@ -1,0 +1,42 @@
+{
+  "originHash" : "372a0b21ee0f0d0e519f0a3b7ed06d5b2fbfcadbc6c79400ed67d7d144a9eccb",
+  "pins" : [
+    {
+      "identity" : "hostingview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Jaesung-Jung/HostingView",
+      "state" : {
+        "revision" : "b9be9c8d134a3a35dfcddb8ea5278e429adf6514",
+        "version" : "1.2.0"
+      }
+    },
+    {
+      "identity" : "lottie-spm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-spm.git",
+      "state" : {
+        "revision" : "04f2fd18cc9404a0a0917265a449002674f24ec9",
+        "version" : "4.5.2"
+      }
+    },
+    {
+      "identity" : "snapkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SnapKit/SnapKit",
+      "state" : {
+        "revision" : "2842e6e84e82eb9a8dac0100ca90d9444b0307f4",
+        "version" : "5.7.1"
+      }
+    },
+    {
+      "identity" : "then",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/devxoul/Then",
+      "state" : {
+        "revision" : "d41ef523faef0f911369f79c0b96815d9dbb6d7a",
+        "version" : "3.0.0"
+      }
+    }
+  ],
+  "version" : 3
+}
