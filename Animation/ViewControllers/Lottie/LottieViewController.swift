@@ -15,8 +15,5 @@ final class LottieViewController: UIViewController {
     let animationView = LottieAnimationView(name: "like")
     animationView.play()
     animationView.loopMode = .loop
-
-    UIViewPropertyAnimator(duration: 1, curve: .linear)
-    UIViewPropertyAnimator(duration: 1, timingParameters: UICubicTimingParameters(animationCurve: .linear))
   }
 }

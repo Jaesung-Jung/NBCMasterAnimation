@@ -243,20 +243,20 @@ extension CubicCurveControl {
     }
 
     func path(in rect: CGRect) -> Path {
-      var path = Path()
-      path.move(to: CGPoint(x: rect.minX, y: rect.maxY))
-      path.addCurve(
-        to: CGPoint(x: rect.maxX, y: rect.minY),
-        control1: CGPoint(
-          x: rect.minX + controlPoint1.x * rect.width,
-          y: rect.maxY - controlPoint1.y * rect.height
-        ),
-        control2: CGPoint(
-          x: rect.minX + controlPoint2.x * rect.width,
-          y: rect.maxY - controlPoint2.y * rect.height
+      Path {
+        $0.move(to: CGPoint(x: rect.minX, y: rect.maxY))
+        $0.addCurve(
+          to: CGPoint(x: rect.maxX, y: rect.minY),
+          control1: CGPoint(
+            x: rect.minX + controlPoint1.x * rect.width,
+            y: rect.maxY - controlPoint1.y * rect.height
+          ),
+          control2: CGPoint(
+            x: rect.minX + controlPoint2.x * rect.width,
+            y: rect.maxY - controlPoint2.y * rect.height
+          )
         )
-      )
-      return path
+      }
     }
   }
 }
