@@ -215,7 +215,7 @@ extension CubicCurveControl {
               y: frame.maxY * 0.5 - frame.maxY * controlPoint2.y
             )
         }
-        .animation(animation, value: controlPoint1)
+        .animation(animation, value: controlPoint2)
       }
       .padding(10)
     }
