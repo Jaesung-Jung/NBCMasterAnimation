@@ -89,7 +89,7 @@ extension BasicAnimationViewController {
     init(_ title: String, prepare: @escaping (UIView, CGRect) -> Void = { _, _ in }, animations: @escaping (UIView, CGRect, Bool) -> Void) {
       self.previewView = AnimationPreviewView(prepareAnimations: prepare, animations: animations)
       super.init(frame: .zero)
-      let titleLabel = UILabel().then {
+      let titleLabel = Label().then {
         $0.text = title
         $0.textColor = .secondaryLabel
         $0.font = .monospacedSystemFont(ofSize: 15, weight: .regular)

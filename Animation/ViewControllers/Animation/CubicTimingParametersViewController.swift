@@ -11,10 +11,14 @@ import SnapKit
 
 final class CubicTimingParametersViewController: UIViewController {
   let cubicCurveControl = CubicCurveControl()
-  let controlPointLabel = UILabel().then {
+  let controlPointLabel = Label().then {
     $0.font = .monospacedSystemFont(ofSize: 13, weight: .bold)
     $0.text = "0.0"
     $0.textAlignment = .center
+    $0.textInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    $0.layer.cornerRadius = 8
+    $0.layer.borderWidth = 1
+    $0.layer.borderColor = UIColor.systemGray.cgColor
   }
 
   let linearButton = UIButton(configuration: .tinted()).then {
@@ -77,18 +81,8 @@ final class CubicTimingParametersViewController: UIViewController {
       $0.size.equalTo(200)
     }
 
-    let controlPointTextView = UIView().then {
-      $0.layer.borderWidth = 1
-      $0.layer.borderColor = UIColor.systemGray.cgColor
-      $0.layer.cornerRadius = 8
-    }
-    controlPointTextView.addSubview(controlPointLabel)
+    scrollView.addSubview(controlPointLabel)
     controlPointLabel.snp.makeConstraints {
-      $0.directionalEdges.equalToSuperview().inset(8)
-    }
-
-    scrollView.addSubview(controlPointTextView)
-    controlPointTextView.snp.makeConstraints {
       $0.top.equalTo(cubicCurveControl.snp.bottom).offset(20)
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
     }
@@ -105,7 +99,7 @@ final class CubicTimingParametersViewController: UIViewController {
     }
     scrollView.addSubview(builtInCurveButtons)
     builtInCurveButtons.snp.makeConstraints {
-      $0.top.equalTo(controlPointTextView.snp.bottom).offset(20)
+      $0.top.equalTo(controlPointLabel.snp.bottom).offset(20)
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
     }
 
@@ -116,7 +110,7 @@ final class CubicTimingParametersViewController: UIViewController {
       $0.height.equalTo(previewView.snp.width).multipliedBy(0.2)
     }
 
-    let durationLabel = UILabel().then {
+    let durationLabel = Label().then {
       $0.font = .monospacedSystemFont(ofSize: 13, weight: .bold)
       $0.text = "1.0"
     }
