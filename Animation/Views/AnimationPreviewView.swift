@@ -56,13 +56,13 @@ final class AnimationPreviewView: UIView {
     }
   }
 
-  func startAnimation<Curve: UITimingCurveProvider>(_ timingParameters: Curve, duration: TimeInterval = 1, repeat mode: RepeatMode = .once) {
+  func startAnimation<Curve: UITimingCurveProvider>(_ timingParameters: Curve, duration: TimeInterval = 1, repeat mode: RepeatMode = .once, completion: (() -> Void)? = nil) {
     if itemView.superview == nil {
       pendingAction = {
-        self.runAnimator(timingParameters, duration: duration, repeat: mode, isReversed: false)
+        self.runAnimator(timingParameters, duration: duration, repeat: mode, isReversed: false, completion: completion)
       }
     } else {
-      runAnimator(timingParameters, duration: duration, repeat: mode, isReversed: false)
+      runAnimator(timingParameters, duration: duration, repeat: mode, isReversed: false, completion: completion)
     }
   }
 
@@ -74,7 +74,7 @@ final class AnimationPreviewView: UIView {
     animator?.stopAnimation(true)
   }
 
-  private func runAnimator<Curve: UITimingCurveProvider>(_ timingParameters: Curve, duration: TimeInterval, repeat mode: RepeatMode, isReversed: Bool) {
+  private func runAnimator<Curve: UITimingCurveProvider>(_ timingParameters: Curve, duration: TimeInterval, repeat mode: RepeatMode, isReversed: Bool, completion: (() -> Void)?) {
     if let animator {
       animator.stopAnimation(true)
     }
@@ -83,10 +83,14 @@ final class AnimationPreviewView: UIView {
       self.animations(self.itemView, self.containerView.bounds, isReversed)
     }
     if mode == .infinity {
-      animator?.addCompletion { position in
+      animator?.addCompletion { [weak self] position in
         if position == .end {
-          self.runAnimator(timingParameters, duration: duration, repeat: mode, isReversed: !isReversed)
+          self?.runAnimator(timingParameters, duration: duration, repeat: mode, isReversed: !isReversed, completion: nil)
         }
+      }
+    } else {
+      animator?.addCompletion { _ in
+        completion?()
       }
     }
     animator?.startAnimation()
@@ -113,6 +117,6 @@ extension AnimationPreviewView {
       $0.width.equalTo(300)
       $0.height.equalTo(100)
     }
-    $0.startAnimation(UICubicTimingParameters(animationCurve: .easeInOut), repeat: .infinity)
+    $0.startAnimation(UISpringTimingParameters(dampingRatio: 0.25), repeat: .infinity)
   }
 }

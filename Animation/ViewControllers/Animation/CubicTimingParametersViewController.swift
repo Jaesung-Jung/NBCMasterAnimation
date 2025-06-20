@@ -30,9 +30,33 @@ final class CubicTimingParametersViewController: UIViewController {
     $0.configuration?.title = "EaseInOut"
   }
 
+  let previewView = AnimationPreviewView {
+    $0.frame.origin.x = $1.minX
+  } animations: { item, rect, _ in
+    if item.transform == .identity {
+      item.transform = CGAffineTransform(translationX: rect.maxX - item.frame.width, y: 0)
+    } else {
+      item.transform = .identity
+    }
+  }
+
+  let durationSlider = UISlider().then {
+    $0.value = 1
+    $0.maximumValue = 3
+    $0.minimumValue = 0.1
+  }
+
+  let playButton = UIButton(configuration: .filled()).then {
+    $0.configuration?.image = UIImage(systemName: "play.fill")
+    $0.configuration?.title = "Play"
+    $0.configuration?.buttonSize = .large
+    $0.configuration?.imagePadding = 8
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Cubic Timing Parameters"
+    view.backgroundColor = .systemBackground
     navigationItem.largeTitleDisplayMode = .never
     updateUI()
 
@@ -83,6 +107,36 @@ final class CubicTimingParametersViewController: UIViewController {
     builtInCurveButtons.snp.makeConstraints {
       $0.top.equalTo(controlPointTextView.snp.bottom).offset(20)
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
+    }
+
+    scrollView.addSubview(previewView)
+    previewView.snp.makeConstraints {
+      $0.top.equalTo(builtInCurveButtons.snp.bottom).offset(20)
+      $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
+      $0.height.equalTo(previewView.snp.width).multipliedBy(0.2)
+    }
+
+    let durationLabel = UILabel().then {
+      $0.font = .monospacedSystemFont(ofSize: 13, weight: .bold)
+      $0.text = "1.0"
+    }
+    scrollView.addSubview(durationLabel)
+    scrollView.addSubview(durationSlider)
+    durationLabel.snp.makeConstraints {
+      $0.leading.equalTo(scrollView.frameLayoutGuide).inset(20)
+      $0.centerY.equalTo(durationSlider)
+      $0.width.equalTo(35)
+    }
+    durationSlider.snp.makeConstraints {
+      $0.top.equalTo(previewView.snp.bottom).offset(20)
+      $0.leading.equalTo(durationLabel.snp.trailing).offset(8)
+      $0.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
+    }
+
+    scrollView.addSubview(playButton)
+    playButton.snp.makeConstraints {
+      $0.top.equalTo(durationSlider.snp.bottom).offset(40)
+      $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
       $0.bottom.equalTo(scrollView.contentLayoutGuide)
     }
 
@@ -116,6 +170,25 @@ final class CubicTimingParametersViewController: UIViewController {
       updateUI()
     }
     easeInOutButton.addAction(easeInOutAction, for: .primaryActionTriggered)
+
+    let sliderAction = UIAction { [unowned self] _ in
+      durationSlider.value = (durationSlider.value * 10).rounded() / 10
+      durationLabel.text = "\(durationSlider.value.formatted(.number.precision(.fractionLength(1))))"
+    }
+    durationSlider.addAction(sliderAction, for: .valueChanged)
+
+    let playAction = UIAction { [unowned self] _ in
+      playButton.isEnabled = false
+
+      let timingParameters = UICubicTimingParameters(
+        controlPoint1: cubicCurveControl.controlPoint1,
+        controlPoint2: cubicCurveControl.controlPoint2
+      )
+      previewView.startAnimation(timingParameters, duration: TimeInterval(durationSlider.value)) { [unowned self] in
+        playButton.isEnabled = true
+      }
+    }
+    playButton.addAction(playAction, for: .primaryActionTriggered)
   }
 }
 
@@ -130,7 +203,7 @@ extension CubicTimingParametersViewController {
     let cp1 = cubicCurveControl.controlPoint1
     let cp2 = cubicCurveControl.controlPoint2
     let format: (CGFloat) -> String = {
-      Float($0).formatted(.number.precision(.fractionLength(1...3)))
+      Float($0).formatted(.number.precision(.fractionLength(3)))
     }
 
     let attributedString = NSMutableAttributedString()
