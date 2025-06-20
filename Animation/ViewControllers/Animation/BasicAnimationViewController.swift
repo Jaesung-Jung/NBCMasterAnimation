@@ -33,6 +33,14 @@ final class BasicAnimationViewController: UIViewController {
         }
       }
 
+      AnimationPreviewView(title: "rotate") { item, rect, isReversed in
+        if isReversed {
+          item.transform = .identity
+        } else {
+          item.transform = CGAffineTransform(rotationAngle: .pi)
+        }
+      }
+
       AnimationPreviewView(title: "scale") {
         $0.layer.cornerRadius = $1.height * 0.5
       } animations: { item, rect, isReversed in
