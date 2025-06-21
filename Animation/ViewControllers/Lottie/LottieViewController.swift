@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import Then
 import Lottie
 import SnapKit
 
-final class LottieViewController: UIViewController {
+final class LottieViewController: DetailViewController {
+  override var menu: Menu? { .lottie }
+
   override func viewDidLoad() {
     super.viewDidLoad()
     let animationView = LottieAnimationView(name: "like")

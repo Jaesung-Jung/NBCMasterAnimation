@@ -9,12 +9,11 @@ import UIKit
 import Then
 import SnapKit
 
-final class BasicAnimationViewController: UIViewController {
+final class BasicAnimationViewController: DetailViewController {
+  override var menu: Menu? { .basicAnimation }
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = "Basic Animation"
-    view.backgroundColor = .systemBackground
-
     let scrollView = UIScrollView()
     view.addSubview(scrollView)
     scrollView.snp.makeConstraints {

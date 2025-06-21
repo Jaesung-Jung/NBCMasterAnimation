@@ -9,7 +9,7 @@ import UIKit
 import Then
 import SnapKit
 
-final class SpringTimingParametersViewController: UIViewController {
+final class SpringTimingParametersViewController: DetailViewController {
   let springCurveControl = SpringCurveView()
 
   let massSlider = ValueSlider().then {
@@ -40,11 +40,7 @@ final class SpringTimingParametersViewController: UIViewController {
     $0.configuration?.imagePadding = 8
   }
 
-  private func updateUI() {
-    massSlider.value = Float(springCurveControl.mass)
-    stiffnessSlider.value = Float(springCurveControl.stiffness)
-    dampingSlider.value = Float(springCurveControl.damping)
-  }
+  override var menu: Menu? { .springParameters }
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -145,6 +141,16 @@ final class SpringTimingParametersViewController: UIViewController {
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
       $0.bottom.equalTo(scrollView.contentLayoutGuide)
     }
+  }
+}
+
+// MARK: - SpringTimingParametersViewController (Private)
+
+extension SpringTimingParametersViewController {
+  private func updateUI() {
+    massSlider.value = Float(springCurveControl.mass)
+    stiffnessSlider.value = Float(springCurveControl.stiffness)
+    dampingSlider.value = Float(springCurveControl.damping)
   }
 }
 

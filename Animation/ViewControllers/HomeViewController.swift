@@ -40,7 +40,7 @@ final class HomeViewController: UIViewController {
     // Transition
     snapshot.appendItems(
       [
-        .alertTransition,
+        .notificationTransition,
         .seamlessTransition
       ],
       toSection: .transition
@@ -120,22 +120,23 @@ extension HomeViewController: UICollectionViewDelegate {
     guard let navigationController, let menu = dataSource.itemIdentifier(for: indexPath) else {
       return
     }
-    switch menu {
+    let viewController = switch menu {
     case .basicAnimation:
-      navigationController.pushViewController(BasicAnimationViewController(), animated: true)
+      BasicAnimationViewController()
     case .cubicParameters:
-      navigationController.pushViewController(CubicTimingParametersViewController(), animated: true)
+      CubicTimingParametersViewController()
     case .springParameters:
-      navigationController.pushViewController(SpringTimingParametersViewController(), animated: true)
+      SpringTimingParametersViewController()
     case .animationControl:
-      break
-    case .alertTransition:
-      break
+      AnimationControlViewController()
+    case .notificationTransition:
+      NotificationTransitionViewController()
     case .seamlessTransition:
-      break
+      SeamlessTransitionViewController()
     case .lottie:
-      break
+      LottieViewController()
     }
+    navigationController.pushViewController(viewController, animated: true)
   }
 }
 
@@ -169,7 +170,7 @@ extension HomeViewController {
     case springParameters
     case animationControl
 
-    case alertTransition
+    case notificationTransition
     case seamlessTransition
 
     case lottie
@@ -196,9 +197,9 @@ extension HomeViewController {
           systemName: "slider.horizontal.3",
           withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
         )!
-      case .alertTransition:
+      case .notificationTransition:
         UIImage(
-          systemName: "uiwindow.split.2x1",
+          systemName: "widget.medium",
           withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemGreen)
         )!
       case .seamlessTransition:
@@ -224,8 +225,8 @@ extension HomeViewController {
         return "Spring Timing Parameters"
       case .animationControl:
         return "Animation Control"
-      case .alertTransition:
-        return "Alert Transition"
+      case .notificationTransition:
+        return "Notification Transition"
       case .seamlessTransition:
         return "Seamless Transition"
       case .lottie:

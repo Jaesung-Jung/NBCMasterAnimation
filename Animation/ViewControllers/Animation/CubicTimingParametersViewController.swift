@@ -9,8 +9,9 @@ import UIKit
 import Then
 import SnapKit
 
-final class CubicTimingParametersViewController: UIViewController {
+final class CubicTimingParametersViewController: DetailViewController {
   let cubicCurveControl = CubicCurveControl()
+
   let controlPointLabel = Label().then {
     $0.font = .monospacedSystemFont(ofSize: 13, weight: .bold)
     $0.textAlignment = .center
@@ -27,11 +28,10 @@ final class CubicTimingParametersViewController: UIViewController {
     $0.configuration?.imagePadding = 8
   }
 
+  override var menu: Menu? { .cubicParameters }
+
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = "Cubic Timing Parameters"
-    view.backgroundColor = .systemBackground
-    navigationItem.largeTitleDisplayMode = .never
     updateUI()
 
     // Views
