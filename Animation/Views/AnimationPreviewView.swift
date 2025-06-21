@@ -89,7 +89,8 @@ final class AnimationPreviewView: UIView {
         }
       }
     } else {
-      animator?.addCompletion { _ in
+      animator?.addCompletion { [weak self] _ in
+        self?.animator = nil
         completion?()
       }
     }

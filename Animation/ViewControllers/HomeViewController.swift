@@ -126,7 +126,7 @@ extension HomeViewController: UICollectionViewDelegate {
     case .cubicParameters:
       navigationController.pushViewController(CubicTimingParametersViewController(), animated: true)
     case .springParameters:
-      break
+      navigationController.pushViewController(SpringTimingParametersViewController(), animated: true)
     case .animationControl:
       break
     case .alertTransition:

@@ -49,19 +49,10 @@ final class SpringCurveView: UIView {
     }
   }
 
-  @inlinable var dampingRatio: CGFloat {
-    get { contentView.state.dampingRatio }
-    set {
-      contentView.state = SpringTimingParameters(
-        dampingRatio: newValue,
-        response: contentView.state.response,
-        initialVelocity: contentView.state.initialVelocity
-      )
-    }
-  }
+  @inlinable var duration: CGFloat { contentView.state.duration }
 
   override init(frame: CGRect) {
-    let state = SpringTimingParameters(dampingRatio: 0.5, response: 1)
+    let state = SpringTimingParameters(mass: 1, stiffness: 80, damping: 5, initialVelocity: 0)
     contentView = StatefulHostingView(state: state) {
       ContentView(spring: $0)
     }
@@ -135,16 +126,6 @@ extension SpringCurveView {
   }
 }
 
-// MARK: - SpringCurveView.State
-
-extension SpringCurveView {
-  private struct State {
-    var mass: CGFloat = 0.5
-    var stiffness: CGFloat = 150
-    var damping: CGFloat = 10
-  }
-}
-
 // MARK: - SpringCurveView.SpringTimingParameters
 
 extension SpringCurveView {
@@ -152,11 +133,8 @@ extension SpringCurveView {
     let mass: CGFloat
     let stiffness: CGFloat
     let damping: CGFloat
-    let initialVelocity: CGFloat
     let duration: CGFloat
-
-    @inlinable var dampingRatio: CGFloat { damping / (2 * sqrt(stiffness * mass)) }
-    @inlinable var response: CGFloat { 2 * .pi / sqrt(stiffness / mass) }
+    let initialVelocity: CGFloat
 
     init(mass: CGFloat, stiffness: CGFloat, damping: CGFloat, initialVelocity: CGFloat) {
       self.mass = mass
@@ -166,17 +144,6 @@ extension SpringCurveView {
       let omegaN = sqrt(stiffness / mass)
       let zeta = damping / (2 * sqrt(stiffness * mass))
       self.duration = zeta == 0 ? 0 : log(1 / 0.001) / (zeta * omegaN)
-    }
-
-    init(dampingRatio: CGFloat, response: CGFloat, initialVelocity: CGFloat = .zero) {
-      let mass: CGFloat = 1
-      let stiffness = pow((2 * .pi) / response, 2) * mass
-      self.init(
-        mass: mass,
-        stiffness: pow((2 * .pi) / response, 2) * mass,
-        damping: 2 * dampingRatio * sqrt(stiffness * mass),
-        initialVelocity: initialVelocity
-      )
     }
 
     func value(at time: CGFloat) -> CGFloat {

@@ -1,5 +1,5 @@
 //
-//  Slider.swift
+//  ValueSlider.swift
 //  Animation
 //
 //  Created by 정재성 on 6/21/25.
@@ -62,6 +62,14 @@ final class ValueSlider: UIControl {
     }
   }
 
+  var titleWidth: CGFloat = 80 {
+    didSet {
+      titleLabel.snp.updateConstraints {
+        $0.width.equalTo(titleWidth)
+      }
+    }
+  }
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     let contentView = UIStackView(axis: .horizontal) {
@@ -71,7 +79,7 @@ final class ValueSlider: UIControl {
     }
 
     titleLabel.snp.makeConstraints {
-      $0.width.equalTo(80)
+      $0.width.equalTo(titleWidth)
     }
 
     valueLabel.snp.makeConstraints {

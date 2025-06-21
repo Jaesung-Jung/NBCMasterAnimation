@@ -20,6 +20,13 @@ final class CubicTimingParametersViewController: UIViewController {
     $0.layer.borderColor = UIColor.systemGray.cgColor
   }
 
+  let playButton = UIButton(configuration: .filled()).then {
+    $0.configuration?.image = UIImage(systemName: "play.fill")
+    $0.configuration?.title = "Play"
+    $0.configuration?.buttonSize = .large
+    $0.configuration?.imagePadding = 8
+  }
+
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Cubic Timing Parameters"
@@ -45,13 +52,6 @@ final class CubicTimingParametersViewController: UIViewController {
       } else {
         item.transform = .identity
       }
-    }
-
-    let playButton = UIButton(configuration: .filled()).then {
-      $0.configuration?.image = UIImage(systemName: "play.fill")
-      $0.configuration?.title = "Play"
-      $0.configuration?.buttonSize = .large
-      $0.configuration?.imagePadding = 8
     }
 
     // Actions
@@ -81,15 +81,18 @@ final class CubicTimingParametersViewController: UIViewController {
     }
     cubicCurveControl.addAction(curveValueChangedAction, for: .valueChanged)
 
-    let playAction = UIAction { [unowned self] _ in
+    let playAction = UIAction { [weak self] _ in
+      guard let self else {
+        return
+      }
       playButton.isEnabled = false
 
       let timingParameters = UICubicTimingParameters(
         controlPoint1: cubicCurveControl.controlPoint1,
         controlPoint2: cubicCurveControl.controlPoint2
       )
-      previewView.startAnimation(timingParameters, duration: TimeInterval(durationSlider.value)) {
-        playButton.isEnabled = true
+      previewView.startAnimation(timingParameters, duration: TimeInterval(durationSlider.value)) { [weak self] in
+        self?.playButton.isEnabled = true
       }
     }
     playButton.addAction(playAction, for: .primaryActionTriggered)
