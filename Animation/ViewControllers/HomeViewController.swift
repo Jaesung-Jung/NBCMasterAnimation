@@ -40,7 +40,7 @@ final class HomeViewController: UIViewController {
     // Transition
     snapshot.appendItems(
       [
-        .notificationTransition,
+        .alertTransition,
         .seamlessTransition
       ],
       toSection: .transition
@@ -129,8 +129,8 @@ extension HomeViewController: UICollectionViewDelegate {
       SpringTimingParametersViewController()
     case .animationControl:
       AnimationControlViewController()
-    case .notificationTransition:
-      NotificationTransitionViewController()
+    case .alertTransition:
+      AlertTransitionViewController()
     case .seamlessTransition:
       SeamlessTransitionViewController()
     case .lottie:
@@ -170,7 +170,7 @@ extension HomeViewController {
     case springParameters
     case animationControl
 
-    case notificationTransition
+    case alertTransition
     case seamlessTransition
 
     case lottie
@@ -197,9 +197,9 @@ extension HomeViewController {
           systemName: "slider.horizontal.3",
           withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
         )!
-      case .notificationTransition:
+      case .alertTransition:
         UIImage(
-          systemName: "widget.medium",
+          systemName: "inset.filled.tophalf.bottomleft.bottomright.rectangle",
           withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemGreen)
         )!
       case .seamlessTransition:
@@ -225,8 +225,8 @@ extension HomeViewController {
         return "Spring Timing Parameters"
       case .animationControl:
         return "Animation Control"
-      case .notificationTransition:
-        return "Notification Transition"
+      case .alertTransition:
+        return "Alert Transition"
       case .seamlessTransition:
         return "Seamless Transition"
       case .lottie:
