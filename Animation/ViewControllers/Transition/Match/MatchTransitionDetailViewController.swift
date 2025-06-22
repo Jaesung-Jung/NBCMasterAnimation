@@ -11,14 +11,24 @@ import SnapKit
 import Kingfisher
 
 final class MatchTransitionDetailViewController: UIViewController {
+  private let transition: MatchTransition?
+
   private let imageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
   }
 
-  init(image: RemoteImage) {
+  init(image: RemoteImage, sourceView: UIView?, sourceRect: CGRect?) {
+    if let sourceView, let sourceRect {
+      self.transition = MatchTransition(sourceView: sourceView, sourceRect: sourceRect)
+    } else {
+      self.transition = nil
+    }
     super.init(nibName: nil, bundle: nil)
-    print("\(image.id) - \(image.hashValue)")
     imageView.kf.setImage(with: image.url)
+    if let transition {
+      self.transitioningDelegate = transition
+      self.modalPresentationStyle = .custom
+    }
   }
 
   @available(*, unavailable)
@@ -29,11 +39,27 @@ final class MatchTransitionDetailViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Image Detail"
-    view.backgroundColor = .systemBackground
+    view.backgroundColor = .black
 
     view.addSubview(imageView)
     imageView.snp.makeConstraints {
       $0.directionalEdges.equalToSuperview()
+    }
+
+    let closeImage = UIImage(
+      systemName: "xmark.circle.fill",
+      withConfiguration: UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22, weight: .bold))
+        .applying(UIImage.SymbolConfiguration(hierarchicalColor: .systemGray))
+    )
+    let closeAction = UIAction(image: closeImage) { [unowned self] _ in
+      dismiss(animated: true)
+    }
+    let closeButton = UIButton(configuration: .plain(), primaryAction: closeAction).then {
+      $0.configuration?.contentInsets = .zero
+    }
+    view.addSubview(closeButton)
+    closeButton.snp.makeConstraints {
+      $0.top.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
     }
   }
 }
@@ -46,7 +72,9 @@ final class MatchTransitionDetailViewController: UIViewController {
       id: UUID().uuidString,
       size: .zero,
       likes: 0,
-      url: URL(string: "https://images.unsplash.com/photo-1745933115134-9cd90e3efcc7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMjA3fDB8MXxhbGx8MzB8fHx8fHx8fDE3NTA1MTU0NDB8&ixlib=rb-4.1.0&q=80&w=1080")!
-    )
+      url: URL(string: "https://images.unsplash.com/photo-1745933115134-9cd90e3efcc7")!
+    ),
+    sourceView: nil,
+    sourceRect: .zero
   )
 }

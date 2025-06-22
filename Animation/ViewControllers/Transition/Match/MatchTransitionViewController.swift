@@ -48,7 +48,23 @@ final class MatchTransitionViewController: DetailViewController {
 extension MatchTransitionViewController: UICollectionViewDelegate {
   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     let image = images[indexPath.item]
-    navigationController?.pushViewController(MatchTransitionDetailViewController(image: image), animated: true)
+    let cell = collectionView.cellForItem(at: indexPath)
+
+    let offset = collectionView.contentOffset
+    let contentInset = collectionView.adjustedContentInset
+    let detailViewController = MatchTransitionDetailViewController(
+      image: image,
+      sourceView: cell,
+      sourceRect: cell.map {
+        CGRect(
+          x: $0.frame.minX,
+          y: $0.frame.minY + contentInset.top - (offset.y + contentInset.top),
+          width: $0.frame.width,
+          height: $0.frame.height
+        )
+      }
+    )
+    present(detailViewController, animated: true)
   }
 
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -146,14 +162,22 @@ extension MatchTransitionViewController {
     private var _task: Task<Void, Never>?
 
     private let imageView = UIImageView().then {
-      $0.contentMode = .scaleAspectFill
       $0.clipsToBounds = true
-      $0.backgroundColor = .systemGray6
+      $0.backgroundColor = .black
     }
 
     var remoteImage: RemoteImage? {
       didSet {
-        imageView.kf.setImage(with: remoteImage?.url)
+        imageView.kf.setImage(with: remoteImage?.url) { [imageView] in
+          guard case .success(let result) = $0 else {
+            return
+          }
+          if result.image.size.width > result.image.size.height {
+            imageView.contentMode = .scaleAspectFit
+          } else {
+            imageView.contentMode = .scaleAspectFill
+          }
+        }
       }
     }
 
