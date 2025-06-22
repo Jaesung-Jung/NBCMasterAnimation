@@ -10,7 +10,7 @@ import Then
 import SnapKit
 
 final class AlertTransitionViewController: DetailViewController {
-  override var menu: Menu? { .notificationTransition }
+  override var menu: Menu? { .alertTransition }
 
   override func viewDidLoad() {
     super.viewDidLoad()

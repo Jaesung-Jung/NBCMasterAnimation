@@ -41,7 +41,7 @@ final class HomeViewController: UIViewController {
     snapshot.appendItems(
       [
         .alertTransition,
-        .seamlessTransition
+        .matchTransition
       ],
       toSection: .transition
     )
@@ -131,8 +131,8 @@ extension HomeViewController: UICollectionViewDelegate {
       AnimationControlViewController()
     case .alertTransition:
       AlertTransitionViewController()
-    case .seamlessTransition:
-      SeamlessTransitionViewController()
+    case .matchTransition:
+      MatchTransitionViewController()
     case .lottie:
       LottieViewController()
     }
@@ -156,81 +156,6 @@ extension HomeViewController {
         return "Transition"
       case .lottie:
         return "Lottie"
-      }
-    }
-  }
-}
-
-// MARK: - HomeViewController.Menu
-
-extension HomeViewController {
-  enum Menu: CustomStringConvertible {
-    case basicAnimation
-    case cubicParameters
-    case springParameters
-    case animationControl
-
-    case alertTransition
-    case seamlessTransition
-
-    case lottie
-
-    var image: UIImage {
-      switch self {
-      case .basicAnimation:
-        UIImage(
-          systemName: "point.bottomleft.filled.forward.to.point.topright.scurvepath",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
-        )!
-      case .cubicParameters:
-        UIImage(
-          systemName: "beziercurve",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
-        )!
-      case .springParameters:
-        UIImage(
-          systemName: "waveform.path.ecg",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
-        )!
-      case .animationControl:
-        UIImage(
-          systemName: "slider.horizontal.3",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
-        )!
-      case .alertTransition:
-        UIImage(
-          systemName: "inset.filled.tophalf.bottomleft.bottomright.rectangle",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemGreen)
-        )!
-      case .seamlessTransition:
-        UIImage(
-          systemName: "rectangle.on.rectangle",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemGreen)
-        )!
-      case .lottie:
-        UIImage(
-          systemName: "sparkles.square.filled.on.square",
-          withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemMint)
-        )!
-      }
-    }
-
-    var description: String {
-      switch self {
-      case .basicAnimation:
-        return "Basic Animation"
-      case .cubicParameters:
-        return "Cubic Timing Parameters"
-      case .springParameters:
-        return "Spring Timing Parameters"
-      case .animationControl:
-        return "Animation Control"
-      case .alertTransition:
-        return "Alert Transition"
-      case .seamlessTransition:
-        return "Seamless Transition"
-      case .lottie:
-        return "Lottie Preview"
       }
     }
   }

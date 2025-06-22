@@ -13,8 +13,8 @@ enum Menu: CustomStringConvertible {
   case springParameters
   case animationControl
 
-  case notificationTransition
-  case seamlessTransition
+  case alertTransition
+  case matchTransition
 
   case lottie
 
@@ -40,12 +40,12 @@ enum Menu: CustomStringConvertible {
         systemName: "slider.horizontal.3",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
       )!
-    case .notificationTransition:
+    case .alertTransition:
       UIImage(
-        systemName: "widget.medium",
+        systemName: "inset.filled.tophalf.bottomleft.bottomright.rectangle",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemGreen)
       )!
-    case .seamlessTransition:
+    case .matchTransition:
       UIImage(
         systemName: "rectangle.on.rectangle",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemGreen)
@@ -68,10 +68,10 @@ enum Menu: CustomStringConvertible {
       return "Spring Timing Parameters"
     case .animationControl:
       return "Animation Control"
-    case .notificationTransition:
-      return "Notification Transition"
-    case .seamlessTransition:
-      return "Seamless Transition"
+    case .alertTransition:
+      return "Alert Transition"
+    case .matchTransition:
+      return "Match Transition"
     case .lottie:
       return "Lottie Preview"
     }
