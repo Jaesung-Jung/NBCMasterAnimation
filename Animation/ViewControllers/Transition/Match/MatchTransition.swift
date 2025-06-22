@@ -15,12 +15,26 @@ final class MatchTransition: NSObject, UIViewControllerTransitioningDelegate {
     self.animationController = AnimationController(sourceView: sourceView, sourceRect: sourceRect)
   }
 
+  func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+    PresentationController(presentedViewController: presented, presenting: presenting, animationController: animationController)
+  }
+
   func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    animationController.wantsInteractiveStart = false
     animationController.isPresenting = true
     return animationController
   }
 
   func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    animationController.isPresenting = false
+    return animationController
+  }
+
+  func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    return nil
+  }
+
+  func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
     animationController.isPresenting = false
     return animationController
   }
@@ -30,6 +44,9 @@ final class MatchTransition: NSObject, UIViewControllerTransitioningDelegate {
 
 extension MatchTransition {
   private class AnimationController: UIPercentDrivenInteractiveTransition, UIViewControllerAnimatedTransitioning {
+    private var presentationAnimator: UIViewPropertyAnimator?
+    private var dismissAnimator: UIViewPropertyAnimator?
+
     let sourceView: UIView
     let sourceRect: CGRect
 
@@ -46,16 +63,24 @@ extension MatchTransition {
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
       if isPresenting {
-        animateTransitionForPresenting(using: transitionContext)
+        presentationInterruptibleAnimator(using: transitionContext).startAnimation()
       } else {
-        animateTransitionForDismissing(using: transitionContext)
+        dismissInterruptibleAnimator(using: transitionContext).startAnimation()
       }
     }
 
-    private func animateTransitionForPresenting(using context: UIViewControllerContextTransitioning) {
+    func interruptibleAnimator(using transitionContext: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
+      if isPresenting {
+        presentationAnimator ?? presentationInterruptibleAnimator(using: transitionContext)
+      } else {
+        dismissAnimator ?? dismissInterruptibleAnimator(using: transitionContext)
+      }
+    }
+
+    private func presentationInterruptibleAnimator(using context: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
       guard let toViewController = context.viewController(forKey: .to) else {
         context.completeTransition(false)
-        return
+        return UIViewPropertyAnimator()
       }
       let finalFrame = context.finalFrame(for: toViewController)
       context.containerView.addSubview(toViewController.view)
@@ -82,17 +107,22 @@ extension MatchTransition {
         maskView.layer.cornerRadius = 50
         toViewController.view.transform = .identity
       }
-      animator.addCompletion { _ in
+      animator.addCompletion { position in
         toViewController.view.mask = nil
         context.completeTransition(true)
+        self.sourceView.isHidden = true
       }
-      animator.startAnimation()
+      animator.addCompletion { [weak self] _ in
+        self?.presentationAnimator = nil
+      }
+      presentationAnimator = animator
+      return animator
     }
 
-    private func animateTransitionForDismissing(using context: UIViewControllerContextTransitioning) {
+    private func dismissInterruptibleAnimator(using context: UIViewControllerContextTransitioning) -> UIViewImplicitlyAnimating {
       guard let fromView = context.view(forKey: .from) else {
         context.completeTransition(false)
-        return
+        return UIViewPropertyAnimator()
       }
       let frame = fromView.bounds
 
@@ -118,10 +148,68 @@ extension MatchTransition {
         maskView.layer.cornerRadius = 0
         fromView.transform = scaleTransform.concatenating(translationTransform)
       }
-      animator.addCompletion { _ in
-        context.completeTransition(true)
+      animator.addCompletion { position in
+        switch position {
+        case .end:
+          context.completeTransition(true)
+          self.sourceView.isHidden = false
+        default:
+          context.completeTransition(false)
+        }
       }
-      animator.startAnimation()
+      animator.addCompletion { [weak self] _ in
+        self?.dismissAnimator = nil
+      }
+      dismissAnimator = animator
+      return animator
+    }
+  }
+}
+
+// MARK: - MatchTransition.PresentationController
+
+extension MatchTransition {
+  private class PresentationController: UIPresentationController, UIGestureRecognizerDelegate {
+    lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePanGestureRecognizer(_:))).then {
+      $0.maximumNumberOfTouches = 1
+      $0.delegate = self
+    }
+
+    weak var animationController: AnimationController?
+
+    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, animationController: AnimationController) {
+      super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
+      self.animationController = animationController
+    }
+
+    override func presentationTransitionWillBegin() {
+      super.presentationTransitionWillBegin()
+      presentedView?.addGestureRecognizer(panGestureRecognizer)
+    }
+
+    @objc func handlePanGestureRecognizer(_ gesture: UIPanGestureRecognizer) {
+      let viewController = presentedViewController
+      switch gesture.state {
+      case .began:
+        let velocity = gesture.velocity(in: viewController.view)
+        guard abs(velocity.x) < abs(velocity.y) else {
+          return
+        }
+        animationController?.wantsInteractiveStart = true
+        viewController.dismiss(animated: true)
+      case .changed:
+        let translation = gesture.translation(in: viewController.view)
+        let progress = translation.y / viewController.view.bounds.width
+        animationController?.update(progress)
+      case .ended:
+        if gesture.velocity(in: viewController.view).y > 20 {
+          animationController?.finish()
+        } else {
+          animationController?.cancel()
+        }
+      default:
+        animationController?.cancel()
+      }
     }
   }
 }
