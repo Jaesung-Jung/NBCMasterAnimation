@@ -73,7 +73,7 @@ enum Menu: CustomStringConvertible {
     case .matchTransition:
       return "Match Transition"
     case .lottie:
-      return "Lottie Preview"
+      return "Lottie"
     }
   }
 }

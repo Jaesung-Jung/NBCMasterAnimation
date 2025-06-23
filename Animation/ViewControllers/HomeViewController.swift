@@ -17,7 +17,7 @@ final class HomeViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = "홈"
+    title = "Home"
     navigationItem.backButtonDisplayMode = .minimal
 
     view.addSubview(collectionView)
@@ -135,7 +135,7 @@ extension HomeViewController: UICollectionViewDelegate {
     case .matchTransition:
       MatchTransitionViewController()
     case .lottie:
-      LottieViewController()
+      LottieListViewController()
     }
     navigationController.pushViewController(viewController, animated: true)
   }

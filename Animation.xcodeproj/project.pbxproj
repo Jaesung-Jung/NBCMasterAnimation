@@ -34,6 +34,9 @@
 			exceptions = (
 				4B1FDF6C2E03057D00E79F4F /* Exceptions for "Animation" folder in "Animation" target */,
 			);
+			explicitFolders = (
+				Resources/LottieAnimations,
+			);
 			path = Animation;
 			sourceTree = "<group>";
 		};

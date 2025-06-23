@@ -15,5 +15,6 @@ class DetailViewController: UIViewController {
     title = menu.map(\.description)
     view.backgroundColor = .systemBackground
     navigationItem.largeTitleDisplayMode = .never
+    navigationItem.backButtonDisplayMode = .minimal
   }
 }
