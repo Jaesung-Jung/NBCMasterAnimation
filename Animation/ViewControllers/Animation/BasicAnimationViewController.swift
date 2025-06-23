@@ -65,7 +65,6 @@ final class BasicAnimationViewController: DetailViewController {
       }
 
       AnimationItem("border") { item, _ in
-        item.layer.cornerRadius = 8
         item.layer.borderColor = UIColor.systemGray.cgColor
       } animations: { item, rect, isReversed in
         item.layer.borderWidth = isReversed ? 0 : 8

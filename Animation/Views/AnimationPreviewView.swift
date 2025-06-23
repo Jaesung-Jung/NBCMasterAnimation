@@ -18,6 +18,7 @@ final class AnimationPreviewView: UIView {
 
   private let itemView = UIView().then {
     $0.backgroundColor = .systemRandomColor
+    $0.layer.cornerRadius = 4
   }
 
   private var animator: UIViewPropertyAnimator?
