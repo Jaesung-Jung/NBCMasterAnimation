@@ -44,8 +44,20 @@ final class CubicTimingParametersViewController: DetailViewController {
       $0.minimumValue = 0.1
     }
 
+    let linearPreviewView = AnimationPreviewView {
+      $0.frame.origin.x = $1.minX
+      $0.backgroundColor = .systemGreen
+    } animations: { item, rect, _ in
+      if item.transform == .identity {
+        item.transform = CGAffineTransform(translationX: rect.maxX - item.frame.width, y: 0)
+      } else {
+        item.transform = .identity
+      }
+    }
+
     let previewView = AnimationPreviewView {
       $0.frame.origin.x = $1.minX
+      $0.backgroundColor = .systemBlue
     } animations: { item, rect, _ in
       if item.transform == .identity {
         item.transform = CGAffineTransform(translationX: rect.maxX - item.frame.width, y: 0)
@@ -86,6 +98,7 @@ final class CubicTimingParametersViewController: DetailViewController {
         return
       }
       playButton.isEnabled = false
+      linearPreviewView.startAnimation(UICubicTimingParameters(animationCurve: .linear), duration: TimeInterval(durationSlider.value))
 
       let timingParameters = UICubicTimingParameters(
         controlPoint1: cubicCurveControl.controlPoint1,
@@ -136,16 +149,36 @@ final class CubicTimingParametersViewController: DetailViewController {
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
     }
 
-    scrollView.addSubview(previewView)
+    let previewStackView = UIStackView(axis: .vertical, spacing: 8) {
+      Label("linear").then {
+        $0.font = .monospacedSystemFont(ofSize: 13, weight: .regular)
+        $0.textColor = .secondaryLabel
+      }
+      linearPreviewView
+      Label("custom").then {
+        $0.font = .monospacedSystemFont(ofSize: 13, weight: .regular)
+        $0.textColor = .secondaryLabel
+      }
+      previewView
+    }
+
+    linearPreviewView.snp.makeConstraints {
+      $0.height.equalTo(linearPreviewView.snp.width).multipliedBy(0.2)
+    }
+
     previewView.snp.makeConstraints {
+      $0.height.equalTo(previewView.snp.width).multipliedBy(0.2)
+    }
+
+    scrollView.addSubview(previewStackView)
+    previewStackView.snp.makeConstraints {
       $0.top.equalTo(builtInCurveButtons.snp.bottom).offset(20)
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
-      $0.height.equalTo(previewView.snp.width).multipliedBy(0.2)
     }
 
     scrollView.addSubview(durationSlider)
     durationSlider.snp.makeConstraints {
-      $0.top.equalTo(previewView.snp.bottom).offset(20)
+      $0.top.equalTo(previewStackView.snp.bottom).offset(20)
       $0.leading.trailing.equalTo(scrollView.frameLayoutGuide).inset(20)
     }
 
