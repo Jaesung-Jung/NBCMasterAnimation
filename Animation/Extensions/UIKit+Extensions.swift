@@ -98,7 +98,7 @@ extension UIStackView {
 
 extension UIColor {
   private static let systemColors: [UIColor] = [
-    .systemRed,
+    systemRed,
     systemGreen,
     systemBlue,
     systemOrange,
