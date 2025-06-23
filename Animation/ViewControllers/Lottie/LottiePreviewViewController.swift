@@ -14,7 +14,7 @@ final class LottiePreviewViewController: UIViewController {
   private let animationView: LottieAnimationView
 
   private let slider = ValueSlider().then {
-    $0.step = 0.01
+    $0.step = 0.001
     $0.minimumValue = 0
     $0.maximumValue = 1
     $0.fractionLength = 2...2

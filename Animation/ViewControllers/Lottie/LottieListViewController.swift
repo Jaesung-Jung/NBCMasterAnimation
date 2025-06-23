@@ -35,8 +35,22 @@ final class LottieListViewController: DetailViewController {
 
     var snapshot = NSDiffableDataSourceSnapshot<Int, URL>()
     snapshot.appendSections([0])
-    snapshot.appendItems(lottieFiles, toSection: 0)
+    snapshot.appendItems(lottieFiles.sorted { $0.lastPathComponent < $1.lastPathComponent }, toSection: 0)
     dataSource.apply(snapshot)
+  }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    for itemCell in collectionView.visibleCells.compactMap({ $0 as? LottieItemCell }) {
+      itemCell.animationView.play()
+    }
+  }
+
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    for itemCell in collectionView.visibleCells.compactMap({ $0 as? LottieItemCell }) {
+      itemCell.animationView.pause()
+    }
   }
 }
 
@@ -86,8 +100,9 @@ extension LottieListViewController {
 
     override init(frame: CGRect) {
       super.init(frame: frame)
-      backgroundColor = .systemGray6
+      contentView.backgroundColor = .systemGray6
       contentView.clipsToBounds = true
+      contentView.layer.cornerRadius = 8
       contentView.addSubview(animationView)
     }
 
@@ -111,7 +126,7 @@ extension LottieListViewController {
       let insets = NSDirectionalEdgeInsets(top: 20, leading: 20, bottom: 20, trailing: 20)
       let spacing = CGFloat(10)
       let width = environment.container.effectiveContentSize.width - insets.leading - insets.trailing
-      let size = (width - spacing) * 0.33
+      let size = (width - spacing) * 0.5
       let item = NSCollectionLayoutItem(
         layoutSize: NSCollectionLayoutSize(
           widthDimension: .absolute(size),
@@ -124,7 +139,7 @@ extension LottieListViewController {
             widthDimension: .fractionalWidth(1),
             heightDimension: .absolute(size)
           ),
-          subitems: [item, item, item]
+          subitems: [item]
         )
         .then {
           $0.interItemSpacing = .flexible(0)

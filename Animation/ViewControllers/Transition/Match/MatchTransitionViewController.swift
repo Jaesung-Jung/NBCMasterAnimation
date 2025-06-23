@@ -122,7 +122,7 @@ extension MatchTransitionViewController {
   }
 
   private func fetchImages(page: Int) async throws -> [RemoteImage] {
-    guard let url = URL(string: "https://unsplash.com/napi/topics/people/photos?page=\(page)&per_page=30") else {
+    guard let url = URL(string: "https://unsplash.com/napi/topics/travel/photos?page=\(page)&per_page=30") else {
       return []
     }
     let (data, _) = try await URLSession.shared.data(for: URLRequest(url: url))
