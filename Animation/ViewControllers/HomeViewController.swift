@@ -32,9 +32,9 @@ final class HomeViewController: UIViewController {
     snapshot.appendItems(
       [
         .basicAnimation,
+        .controlAnimation,
         .cubicParameters,
-        .springParameters,
-        .animationControl
+        .springParameters
       ],
       toSection: .animation
     )
@@ -128,7 +128,7 @@ extension HomeViewController: UICollectionViewDelegate {
       CubicTimingParametersViewController()
     case .springParameters:
       SpringTimingParametersViewController()
-    case .animationControl:
+    case .controlAnimation:
       AnimationControlViewController()
     case .alertTransition:
       AlertTransitionViewController()

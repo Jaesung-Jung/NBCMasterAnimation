@@ -11,7 +11,7 @@ enum Menu: CustomStringConvertible {
   case basicAnimation
   case cubicParameters
   case springParameters
-  case animationControl
+  case controlAnimation
 
   case alertTransition
   case matchTransition
@@ -35,7 +35,7 @@ enum Menu: CustomStringConvertible {
         systemName: "waveform.path.ecg",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
       )!
-    case .animationControl:
+    case .controlAnimation:
       UIImage(
         systemName: "slider.horizontal.3",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
@@ -66,8 +66,8 @@ enum Menu: CustomStringConvertible {
       return "Cubic Timing Parameters"
     case .springParameters:
       return "Spring Timing Parameters"
-    case .animationControl:
-      return "Animation Control"
+    case .controlAnimation:
+      return "Control Animation"
     case .alertTransition:
       return "Alert Transition"
     case .matchTransition:

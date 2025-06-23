@@ -70,6 +70,8 @@ final class ValueSlider: UIControl {
     }
   }
 
+  var fractionLength: ClosedRange<Int> = 0...1
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     let contentView = UIStackView(axis: .horizontal) {
@@ -115,7 +117,7 @@ extension ValueSlider {
   }
 
   private func formattedValue(_ value: Float) -> String {
-    "\(slider.value.formatted(.number.precision(.fractionLength(0...1))))"
+    "\(slider.value.formatted(.number.precision(.fractionLength(fractionLength))))"
   }
 }
 
