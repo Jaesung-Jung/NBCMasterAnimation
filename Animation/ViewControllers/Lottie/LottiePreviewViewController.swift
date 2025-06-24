@@ -37,7 +37,6 @@ final class LottiePreviewViewController: UIViewController {
       $0.loopMode = .loop
     }
     super.init(nibName: nil, bundle: nil)
-    self.displayLink = CADisplayLink(target: self, selector: #selector(updateDisplay))
   }
 
   @available(*, unavailable)
@@ -88,7 +87,15 @@ final class LottiePreviewViewController: UIViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    displayLink = CADisplayLink(target: self, selector: #selector(updateDisplay))
     animationView.play()
+  }
+
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
+    animationView.stop()
+    displayLink?.invalidate()
+    displayLink = nil
   }
 
   @objc func updateDisplay() {
