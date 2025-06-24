@@ -23,6 +23,7 @@ final class LottiePreviewViewController: UIViewController {
   private let playButton = UIButton(configuration: .plain()).then {
     $0.configuration?.image = UIImage(systemName: "play.fill")
     $0.configuration?.contentInsets = .zero
+    $0.isHidden = true
   }
 
   private let pauseButton = UIButton(configuration: .plain()).then {
@@ -55,7 +56,6 @@ final class LottiePreviewViewController: UIViewController {
     animationView.snp.makeConstraints {
       $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
     }
-    displayLink?.add(to: .main, forMode: .default)
 
     let controlStackView = UIStackView(axis: .horizontal, spacing: 20) {
       playButton
@@ -88,6 +88,7 @@ final class LottiePreviewViewController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     displayLink = CADisplayLink(target: self, selector: #selector(updateDisplay))
+    displayLink?.add(to: .main, forMode: .default)
     animationView.play()
   }
 
