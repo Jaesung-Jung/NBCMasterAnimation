@@ -14,6 +14,11 @@ final class CubicCurveControl: UIControl {
   private let contentView: StatefulHostingView<(CGPoint, CGPoint, Bool)>
   private var controlTarget: ControlTarget?
 
+  private let panGestureRecognizer = PanGestureRecognizer().then {
+    $0.minimumNumberOfTouches = 1
+    $0.maximumNumberOfTouches = 1
+  }
+
   @inlinable var controlPoint1: CGPoint { contentView.state.0 }
   @inlinable var controlPoint2: CGPoint { contentView.state.1 }
 
@@ -25,6 +30,8 @@ final class CubicCurveControl: UIControl {
     }
     super.init(frame: frame)
     addSubview(contentView)
+    contentView.addGestureRecognizer(panGestureRecognizer)
+    panGestureRecognizer.addTarget(self, action: #selector(handlePanGestureRecognizer(_:)))
   }
 
   required init?(coder: NSCoder) {
@@ -36,57 +43,45 @@ final class CubicCurveControl: UIControl {
     contentView.frame = bounds
   }
 
-  override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-    super.touchesBegan(touches, with: event)
-    guard let touch = touches.first else {
-      return
-    }
-    let location = touch.location(in: self)
-    let d1 = distance(from: location, to: point(for: controlPoint1, in: bounds))
-    let d2 = distance(from: location, to: point(for: controlPoint2, in: bounds))
+  @objc private func handlePanGestureRecognizer(_ gestureRecognizer: UIPanGestureRecognizer) {
+    switch gestureRecognizer.state {
+    case .began:
+      let location = gestureRecognizer.location(in: self)
+      let d1 = distance(from: location, to: point(for: controlPoint1, in: bounds))
+      let d2 = distance(from: location, to: point(for: controlPoint2, in: bounds))
+      let tolerance: CGFloat = 40
+      guard d1 <= tolerance || d2 <= tolerance else {
+        return
+      }
+      if d1 < d2 {
+        controlTarget = .controlPoint1(controlPoint1)
+      } else {
+        controlTarget = .controlPoint2(controlPoint2)
+      }
 
-    let tolerance: CGFloat = 40
-    guard d1 <= tolerance || d2 <= tolerance else {
-      return
-    }
-    if d1 < d2 {
-      controlTarget = .controlPoint1(controlPoint: controlPoint1, touchLocation: location)
-    } else {
-      controlTarget = .controlPoint2(controlPoint: controlPoint2, touchLocation: location)
-    }
-  }
+    case .changed:
+      guard let controlTarget else {
+        return
+      }
+      let translation = gestureRecognizer.translation(in: gestureRecognizer.view)
+      let newControlPoint = CGPoint(
+        x: min(max(0, controlTarget.controlPoint.x + (translation.x / bounds.width)), 1),
+        y: min(max(0, controlTarget.controlPoint.y - (translation.y / bounds.height)), 1)
+      )
+      switch controlTarget {
+      case .controlPoint1:
+        contentView.state = (newControlPoint, controlPoint2, false)
+      case .controlPoint2:
+        contentView.state = (controlPoint1, newControlPoint, false)
+      }
+      sendActions(for: .valueChanged)
 
-  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-    super.touchesMoved(touches, with: event)
-    guard let controlTarget, let touch = touches.first else {
-      return
-    }
-    let location = touch.location(in: self)
-    let translation = CGPoint(
-      x: location.x - controlTarget.touchLocation.x,
-      y: location.y - controlTarget.touchLocation.y
-    )
-    let newControlPoint = CGPoint(
-      x: min(max(0, controlTarget.controlPoint.x + (translation.x / bounds.width)), 1),
-      y: min(max(0, controlTarget.controlPoint.y - (translation.y / bounds.height)), 1)
-    )
-    switch controlTarget {
-    case .controlPoint1:
-      contentView.state = (newControlPoint, controlPoint2, false)
-    case .controlPoint2:
-      contentView.state = (controlPoint1, newControlPoint, false)
-    }
-    sendActions(for: .valueChanged)
-  }
+    case .ended, .cancelled, .failed:
+      controlTarget = nil
 
-  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-    super.touchesEnded(touches, with: event)
-    controlTarget = nil
-  }
-
-  override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-    super.touchesCancelled(touches, with: event)
-    controlTarget = nil
+    default:
+      break
+    }
   }
 
   func setControlPoint1(_ p1: CGPoint, controlPoint2 p2: CGPoint, animated: Bool) {
@@ -115,24 +110,35 @@ extension CubicCurveControl {
   }
 }
 
+// MARK: - CubicCurveControl.PanGestureRecognizer
+
+extension CubicCurveControl {
+  private class PanGestureRecognizer: UIPanGestureRecognizer {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+      super.touchesBegan(touches, with: event)
+      state = .began
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
+      super.touchesMoved(touches, with: event)
+      if state != .changed {
+        state = .changed
+      }
+    }
+  }
+}
+
 // MARK: - CubicCurveControl.ControlTarget
 
 extension CubicCurveControl {
   private enum ControlTarget {
-    case controlPoint1(controlPoint: CGPoint, touchLocation: CGPoint)
-    case controlPoint2(controlPoint: CGPoint, touchLocation: CGPoint)
+    case controlPoint1(CGPoint)
+    case controlPoint2(CGPoint)
 
     @inlinable var controlPoint: CGPoint {
       switch self {
-      case .controlPoint1(let controlPoint, _), .controlPoint2(let controlPoint, _):
+      case .controlPoint1(let controlPoint), .controlPoint2(let controlPoint):
         return controlPoint
-      }
-    }
-
-    @inlinable var touchLocation: CGPoint {
-      switch self {
-      case .controlPoint1(_, let location), .controlPoint2(_, let location):
-        return location
       }
     }
   }
