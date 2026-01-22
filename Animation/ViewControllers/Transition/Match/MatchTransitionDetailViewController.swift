@@ -10,8 +10,10 @@ import Then
 import SnapKit
 import Kingfisher
 
-final class MatchTransitionDetailViewController: UIViewController {
+final class MatchTransitionDetailViewController: UIViewController, UINavigationBarDelegate {
   private let transition: MatchTransition?
+
+  private let navigationBar = UINavigationBar()
 
   private let imageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
@@ -29,6 +31,9 @@ final class MatchTransitionDetailViewController: UIViewController {
       self.transitioningDelegate = transition
       self.modalPresentationStyle = .custom
     }
+
+    navigationBar.items = [navigationItem]
+    navigationBar.delegate = self
   }
 
   @available(*, unavailable)
@@ -38,7 +43,6 @@ final class MatchTransitionDetailViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    title = "Image Detail"
     view.backgroundColor = .black
 
     view.addSubview(imageView)
@@ -46,21 +50,19 @@ final class MatchTransitionDetailViewController: UIViewController {
       $0.directionalEdges.equalToSuperview()
     }
 
-    let closeImage = UIImage(
-      systemName: "xmark.circle.fill",
-      withConfiguration: UIImage.SymbolConfiguration(font: .systemFont(ofSize: 22, weight: .bold))
-        .applying(UIImage.SymbolConfiguration(hierarchicalColor: .systemGray))
-    )
-    let closeAction = UIAction(image: closeImage) { [unowned self] _ in
+    view.addSubview(navigationBar)
+    navigationBar.snp.makeConstraints {
+      $0.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+    }
+
+    let closeAction = UIAction { [unowned self] _ in
       dismiss(animated: true)
     }
-    let closeButton = UIButton(configuration: .plain(), primaryAction: closeAction).then {
-      $0.configuration?.contentInsets = .zero
-    }
-    view.addSubview(closeButton)
-    closeButton.snp.makeConstraints {
-      $0.top.trailing.equalTo(view.safeAreaLayoutGuide).inset(20)
-    }
+    navigationItem.rightBarButtonItem = UIBarButtonItem(systemItem: .close, primaryAction: closeAction)
+  }
+
+  func position(for bar: any UIBarPositioning) -> UIBarPosition {
+    return .topAttached
   }
 }
 
