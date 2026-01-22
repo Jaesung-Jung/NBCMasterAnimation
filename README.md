@@ -1,4 +1,4 @@
-# 내일배움캠프 iOS 마스터 트랙 7기 - Animation, Transition 데모
+# 내일배움캠프 iOS - Animation, Transition 데모
 
 ## Menu
 <img src="Previews/preview_menu.png" width="300px"/>
