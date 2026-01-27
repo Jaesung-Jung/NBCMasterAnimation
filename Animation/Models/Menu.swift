@@ -13,6 +13,12 @@ enum Menu: CustomStringConvertible {
   case springParameters
   case controlAnimation
 
+  case collision
+  case gravity
+  case attachment
+  case snap
+  case push
+
   case alertTransition
   case matchTransition
 
@@ -39,6 +45,31 @@ enum Menu: CustomStringConvertible {
       UIImage(
         systemName: "slider.horizontal.3",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemBlue)
+      )!
+    case .collision:
+      UIImage(
+        systemName: "arrow.down.to.line",
+        withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemIndigo)
+      )!
+    case .gravity:
+      UIImage(
+        systemName: "circle.circle",
+        withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemIndigo)
+      )!
+    case .attachment:
+      UIImage(
+        systemName: "link",
+        withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemIndigo)
+      )!
+    case .snap:
+      UIImage(
+        systemName: "rectangle.on.rectangle.dashed",
+        withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemIndigo)
+      )!
+    case .push:
+      UIImage(
+        systemName: "arrow.up.and.down.and.arrow.left.and.right",
+        withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemIndigo)
       )!
     case .alertTransition:
       UIImage(
@@ -68,6 +99,16 @@ enum Menu: CustomStringConvertible {
       return "Spring Timing Parameters"
     case .controlAnimation:
       return "Control Animation"
+    case .collision:
+      return "Collision"
+    case .gravity:
+      return "Gravity"
+    case .attachment:
+      return "Attachment"
+    case .snap:
+      return "Snap"
+    case .push:
+      return "Push"
     case .alertTransition:
       return "Alert Transition"
     case .matchTransition:

@@ -38,6 +38,17 @@ final class HomeViewController: UIViewController {
       ],
       toSection: .animation
     )
+    // Dynamics
+    snapshot.appendItems(
+      [
+        .collision,
+        .gravity,
+        .attachment,
+        .snap,
+        .push
+      ],
+      toSection: .dynamic
+    )
     // Transition
     snapshot.appendItems(
       [
@@ -130,6 +141,16 @@ extension HomeViewController: UICollectionViewDelegate {
       SpringTimingParametersViewController()
     case .controlAnimation:
       AnimationControlViewController()
+    case .collision:
+      CollisionViewController()
+    case .gravity:
+      GravityViewController()
+    case .attachment:
+      AttachmentViewController()
+    case .snap:
+      SnapViewController()
+    case .push:
+      PushViewController()
     case .alertTransition:
       AlertTransitionViewController()
     case .matchTransition:
@@ -146,6 +167,7 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController {
   enum Section: Int, CustomStringConvertible, CaseIterable {
     case animation
+    case dynamic
     case transition
     case lottie
 
@@ -153,6 +175,8 @@ extension HomeViewController {
       switch self {
       case .animation:
         return "Animation"
+      case .dynamic:
+        return "Dynamic"
       case .transition:
         return "Transition"
       case .lottie:
