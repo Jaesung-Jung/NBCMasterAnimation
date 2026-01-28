@@ -63,7 +63,7 @@ enum Menu: CustomStringConvertible {
       )!
     case .snap:
       UIImage(
-        systemName: "rectangle.on.rectangle.dashed",
+        systemName: "circlebadge.2",
         withConfiguration: UIImage.SymbolConfiguration(hierarchicalColor: .systemIndigo)
       )!
     case .push:
