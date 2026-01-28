@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import Then
 
 final class AttachmentViewController: DetailViewController {
@@ -29,6 +30,15 @@ final class AttachmentViewController: DetailViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    let infoLabel = ShimmerEffectLabel(text: "화면을 드래그\n해보세요.").then {
+      $0.font = .systemFont(ofSize: 24, weight: .bold)
+    }
+    view.addSubview(infoLabel)
+    infoLabel.snp.makeConstraints {
+      $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+      $0.centerX.equalToSuperview()
+    }
+
     view.layer.addSublayer(lineLayer)
     view.addSubview(itemView)
     view.addSubview(anchorView)

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import Then
 
 final class GravityViewController: DetailViewController {
@@ -39,6 +40,14 @@ final class GravityViewController: DetailViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    let infoLabel = ShimmerEffectLabel(text: "노란색 원을\n드래그 해보세요.").then {
+      $0.font = .systemFont(ofSize: 20, weight: .bold)
+    }
+    view.addSubview(infoLabel)
+    infoLabel.snp.makeConstraints {
+      $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+      $0.centerX.equalToSuperview()
+    }
 
     sun.frame = CGRect(
       x: view.frame.midX - 40,

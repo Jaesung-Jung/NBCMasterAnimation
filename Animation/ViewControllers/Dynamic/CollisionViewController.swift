@@ -29,19 +29,16 @@ final class CollisionViewController: DetailViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-
-    view.addSubview(barrierView)
-
-    let descriptionLabel = UILabel().then {
-      $0.text = "화면을 터치해서\n확인하세요 👇"
-      $0.numberOfLines = 0
-      $0.textAlignment = .center
+    let infoLabel = ShimmerEffectLabel(text: "화면을 터치\n해보세요.").then {
+      $0.font = .systemFont(ofSize: 20, weight: .bold)
     }
-    view.addSubview(descriptionLabel)
-    descriptionLabel.snp.makeConstraints {
+    view.addSubview(infoLabel)
+    infoLabel.snp.makeConstraints {
       $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
       $0.centerX.equalToSuperview()
     }
+
+    view.addSubview(barrierView)
 
     animator.addBehavior(gravityBehavior)
     animator.addBehavior(collisionBehavior)

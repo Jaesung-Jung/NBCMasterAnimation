@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import Then
 
 final class SnapViewController: DetailViewController {
@@ -20,6 +21,14 @@ final class SnapViewController: DetailViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    let infoLabel = ShimmerEffectLabel(text: "화면을 터치\n해보세요.").then {
+      $0.font = .systemFont(ofSize: 20, weight: .bold)
+    }
+    view.addSubview(infoLabel)
+    infoLabel.snp.makeConstraints {
+      $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+      $0.centerX.equalToSuperview()
+    }
 
     itemView.center = view.center
     view.addSubview(itemView)
@@ -40,7 +49,7 @@ final class SnapViewController: DetailViewController {
     }
 
     let newSnapBehavior = UISnapBehavior(item: itemView, snapTo: location).then {
-      $0.damping = 0.1
+      $0.damping = 0.5
     }
     animator.addBehavior(newSnapBehavior)
 

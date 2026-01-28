@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 import Then
 
 final class PushViewController: DetailViewController {
@@ -21,6 +22,15 @@ final class PushViewController: DetailViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    let infoLabel = ShimmerEffectLabel(text: "화면을 터치\n해보세요.").then {
+      $0.font = .systemFont(ofSize: 20, weight: .bold)
+    }
+    view.addSubview(infoLabel)
+    infoLabel.snp.makeConstraints {
+      $0.top.equalTo(view.safeAreaLayoutGuide).inset(20)
+      $0.centerX.equalToSuperview()
+    }
+
     blocks.append(contentsOf: makeBlocks(in: view.bounds))
 
     for block in blocks {
